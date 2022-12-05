@@ -127,6 +127,11 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# The above was manually added by github when choosing python as a preset
+# Below are my own additions
+
+# Excluding each day's sample data, since I'm pretty sure it's randomly generated per user anyway
 day1/rations.txt
 day2/guide.txt
-day3/rucksacks.txt
+day3/puzzle_input.txt
