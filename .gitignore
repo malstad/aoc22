@@ -127,3 +127,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+day1/rations.txt
+day2/guide.txt
+day3/rucksacks.txt
