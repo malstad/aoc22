@@ -1,49 +1,43 @@
 wkd, fname = str(__file__).rsplit('/', 1) 
 
 def main():
-    puzzle_input = open(wkd + '/puzzle_input.txt', 'r')
-    elf_count, result = problem1()
+    result = problem1()
     print(result)
 
-    result = problem2(elf_count)
+    result = problem2()
     print(result)
     
     return
 
-# A rucksack is a string of characters (case-sensitive) where each letter represents an item in the bag
-# Each one has two equally sized partitions, and each one should contain one - and only 1 (?) - shared item
-# the shared item determines the type of rucksack, which in turn determines its priority, see get_priority()
+# A rucksack is a string of characters where each letter (case-sensitive) represents an item in the bag
+# Each bag has two equally sized partitions, and each partition should contain one - and only 1 - shared item between them
+# the shared item determines the type of rucksack, which in turn, determines its priority - see get_priority()
 def problem1():
-    sum_of_type_priority = elf_count = 0
+    priority_total = 0
     puzzle_input = open(wkd + '/puzzle_input.txt', 'r')
     
     for line in puzzle_input:
         contents = line.strip()
-        sum_of_type_priority += get_priority(get_type(contents))
-        elf_count += 1      # when you reduce people to numbers, it makes them easier to manipulate.
-    return elf_count, sum_of_type_priority
+        priority_total += get_priority(get_type(contents))
+    return priority_total
 
 # This time we don't care about partitions of each individual rucksack, 
 # but instead we should look at 3 rucksacks at a time to find the uniquely common letter between them (badge)
 # what is the total of every group of elves' badges' values?
-def problem2(elf_count):
-    puzzle_input = open(wkd + '/puzzle_input.txt', 'r')
-    sum_of_badge_values = 0
-    sack_count = 0
-    rucksacks = puzzle_input.readlines()
+def problem2():
+    badges_total = sack_count = 0
+    group_size = 3
     
+    puzzle_input = open(wkd + '/puzzle_input.txt', 'r')
+    rucksacks = puzzle_input.readlines()                            # transform it into a list so I don't have to deal with filesystem shit
+    
+    # Instead of iterating automatically using a for loop, it'll be easier to use *while* so we can process <group_size> rows at a time
     while sack_count < len(rucksacks):
-        group_size = 3
-        elf_index = 0
-        group_contents = rucksacks[sack_count:sack_count+group_size] # the contents of N rucksacks in a list
+        group_contents = rucksacks[sack_count:sack_count+group_size] # narrow down just the slice of the list we need
+        badges_total += get_priority(get_badge(group_contents))      # figure out the group's badge, then that badge's value, add it to the total
         
-        badge = get_badge(group_contents)
-        sum_of_badge_values += get_priority(badge)
-        
-        sack_count += group_size # next set of elves, ready for processing
-
-
-    return sum_of_badge_values
+        sack_count += group_size                                     # onto the next batch
+    return badges_total
 
 # With a collection of rucksacks to rummage through, which item is uniquely shared between them all? (e.g. they all have 'j', or 'N')
 def get_badge(collection):
@@ -61,25 +55,24 @@ def get_badge(collection):
 
     return badge_type   
 
-
 # determines the type of rucksack
 # according to the rules, the type is the uniquely shared letter (case sensitive) between each half
 def get_type(rucksack):
     mid = int(len(rucksack)/2)
-    bag_type = 'Z'                          # start at a high value, again so we fail loudly
+    bag_type = 'z'                          # start at a high value, again so we fail loudly
 
     part0 = rucksack[0:mid] 
     part1 = rucksack[mid:mid*2] 
 
-    for item in part0:          # in the first partition, go letter by letter 
-        if item in part1:       # and see if that letter is in the other part
-            bag_type = item     # if so, we now know the bag type
+    for letter in part0:          # in the first partition, go letter by letter 
+        if letter in part1:       # and see if that letter is in the other part
+            bag_type = letter     # if so, we now know the bag type
             break               # no need to continue looping
               
     return bag_type
 
  # this was originally just a quick bounds check with if/elif and >= and <= conditionals using ascii hardcoded values,
- # but this seemed more fun... crash course with lists, and ranges, and dictionaries
+ # but this seemed more fun... crash course with lists, ranges, and dictionaries
 def get_priority(item_type):
     item_type_ascii = ord(item_type)
     lcase = list(range(ord('a'), ord('z')+1))           # range of ascii values for lowercase (97 - 122)

@@ -128,7 +128,7 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# The above was manually added by github when choosing python as a preset
+# The above was manually added by github and/or VS Code when choosing python as a preset
 # Below are my own additions
 
 # Excluding each day's sample data, since I'm pretty sure it's randomly generated per user anyway
