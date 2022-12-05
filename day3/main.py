@@ -35,9 +35,9 @@ def problem2(elf_count):
     while sack_count < len(rucksacks):
         group_size = 3
         elf_index = 0
-        elf_group = rucksacks[sack_count:sack_count+group_size] # a slice of
+        group_contents = rucksacks[sack_count:sack_count+group_size] # the contents of N rucksacks in a list
         
-        badge = get_badge(elf_group)
+        badge = get_badge(group_contents)
         sum_of_badge_values += get_priority(badge)
         
         sack_count += group_size # next set of elves, ready for processing
@@ -47,17 +47,17 @@ def problem2(elf_count):
 
 # With a collection of rucksacks to rummage through, which item is uniquely shared between them all? (e.g. they all have 'j', or 'N')
 def get_badge(collection):
-    badge_type = 'z'
+    badge_type = 'Z'
 
     # this loop definitely assumes valid input...
-    for item in collection[0]:                  # for every item in the *first* rucksack
-        found_matches = 0 
-        for other in collection[1:]:            # look at every item in the collection of rucksacks (excluding the first one)
+    for item in collection[0]:                  # for every item in the *first* rucksack in the group of 3
+        found_matches = 0                       
+        for other in collection[1:]:            # we take a peek at the other bags...
             if item in other.strip():           # and check to see if it's in each of the others, one at a time
                 found_matches += 1              # if it's found in one, we increase the counter by 1
-                badge_type = item               # just in case this *is* the right one, assign it
-        if found_matches == len(collection)-1:  # in the case of collections of 3, there should be two matches for it to be legit
-            break
+                badge_type = item               # save the value for later just in case this *is* the right one
+        if found_matches == len(collection)-1:  # in the case of groups of 3, there should be two matches for it to be legit
+            break                               # we found it! we can break out and stop comparing letters
 
     return badge_type   
 

@@ -84,15 +84,11 @@ def run_round(opponent_val, round_result):
         case 'Y':
             bonus = 3                   # we just copied the opponent's answer, so take my bonus, no other change
         case 'Z':
-            my_pick = (my_pick % 3) + 1 # using the same formula we figured out in round_won() 
+            my_pick = my_pick % 3 + 1   # using the same formula we figured out in round_won() 
             bonus = 6
-        case 'X':                       # losing the round is tougher, I can't figure out a way to use modulo in a similar, yet reverse fashion, 
-            for p in possible_picks:    # so we'll just loop over all three possible options using round_won() func until it returns False
-                if round_won(p, opponent_val) == False:
-                    my_pick = p         # still fairly optimized, 1-3 arithmetic operations per line, instead of exactly 1
-                    break               # feels kinda gross though ngl, happy to be one-upped here :)
-
-
+        case 'X':                       # edit: credit to @TerreneCoder for the solution!
+            my_pick = (my_pick%3+1)%3+1 # simple really, take the winning value, then take the winning value of *that* to get the losing value
+                                        
     return my_pick + bonus              # round concludes, my score is just the sum of the numeric value of my play, plus any win/draw bonus
 
 if __name__ == "__main__":
